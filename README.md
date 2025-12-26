@@ -106,9 +106,7 @@ loan = Curve.recurrence(initial=10000, step_fn=loan_step, dt=1.0)
 | `Curve.linear(m, b)` | m*t + b | Linear growth/decay |
 | `Curve.exponential(base, rate)` | base * e^(rate*t) | Continuous growth |
 | `Curve.compound(P, r, n)` | P * (1+r/n)^(nt) | Compound interest |
-| `Curve.polynomial(*coeffs)` | c₀ + c₁t + c₂t² + ... | Polynomial curves |
 | `Curve.step([(t, v), ...])` | Piecewise constant | Payment schedules |
-| `Curve.sine(A, f, φ)` | A * sin(2πft + φ) | Periodic patterns |
 | `Curve.from_function(fn)` | fn(t) | Custom functions |
 | `Curve.from_points(pts)` | Interpolated | Data-driven curves |
 | `Curve.recurrence(init, step)` | Iterative | Complex dependencies |
@@ -244,7 +242,3 @@ split_curve = Curve.compound(split_amount, 0.08/12).delay(12)
 - `curve.find_value(target, t1, t2)` - Find when curve = target
 - `curve.integrate_over(t1, t2)` - Numerical integration
 - `curve.sum_over(t1, t2, dt)` - Sum discrete samples
-
-## License
-
-MIT

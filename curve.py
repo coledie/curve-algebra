@@ -171,6 +171,86 @@ class Curve(ABC):
         """Find where the curve equals target."""
         shifted = self - target
         return shifted.find_zero(t_start, t_end, tolerance)
+    
+    # ==================== Static Factory Methods ====================
+    
+    @staticmethod
+    def constant(value: Evaluable) -> Curve:
+        """Create a constant curve: f(t) = value"""
+        return ConstantCurve(value)
+    
+    @staticmethod
+    def linear(slope: Evaluable, intercept: Evaluable = 0) -> Curve:
+        """Create a linear curve: f(t) = slope * t + intercept"""
+        return LinearCurve(slope, intercept)
+    
+    @staticmethod
+    def exponential(base: Evaluable, rate: Evaluable) -> Curve:
+        """Create an exponential curve: f(t) = base * e^(rate * t)"""
+        return ExponentialCurve(base, rate)
+    
+    @staticmethod
+    def compound(principal: Evaluable, rate: Evaluable, n: int = 1) -> Curve:
+        """Create a compound interest curve: f(t) = principal * (1 + rate/n)^(n*t)"""
+        return CompoundCurve(principal, rate, n)
+    
+    @staticmethod
+    def power(base: Evaluable, exponent: Evaluable) -> Curve:
+        """Create a power curve: f(t) = base * t^exponent"""
+        return PowerCurve(base, exponent)
+    
+    @staticmethod
+    def polynomial(coefficients: List[Evaluable]) -> Curve:
+        """Create a polynomial curve from coefficients [c0, c1, c2, ...]: f(t) = c0 + c1*t + c2*t^2 + ..."""
+        return PolynomialCurve(coefficients)
+    
+    @staticmethod
+    def step(transitions: List[Tuple[float, Evaluable]]) -> Curve:
+        """Create a step curve with transitions at specific times."""
+        return StepCurve(transitions)
+    
+    @staticmethod
+    def periodic(inner: Curve, period: float) -> Curve:
+        """Create a periodic curve that repeats every 'period' time units."""
+        return PeriodicCurve(inner, period)
+    
+    @staticmethod
+    def sine(amplitude: Evaluable = 1, frequency: Evaluable = 1, phase: Evaluable = 0, offset: Evaluable = 0) -> Curve:
+        """Create a sine curve: f(t) = amplitude * sin(2π * frequency * t + phase) + offset"""
+        return SineCurve(amplitude, frequency, phase, offset)
+    
+    @staticmethod
+    def piecewise(pieces: List[Tuple[float, float, Curve]]) -> Curve:
+        """Create a piecewise curve from [(t_start, t_end, curve), ...]"""
+        return PiecewiseCurve(pieces)
+    
+    @staticmethod
+    def function(fn: Callable[[float], float]) -> Curve:
+        """Create a curve from a Python function."""
+        return FunctionCurve(fn)
+    
+    @staticmethod
+    def interpolate(points: List[Tuple[float, float]], method: str = 'linear') -> Curve:
+        """Create an interpolated curve from data points."""
+        return InterpolatedCurve(points, method)
+    
+    @staticmethod
+    def recurrence(initial: float, step_fn: Callable[[float, float, int], float], dt: float = 1.0) -> Curve:
+        """
+        Create a curve defined by a recurrence relation.
+        
+        Args:
+            initial: Initial value at t=0
+            step_fn: Function (prev_value, current_time, step_index) -> new_value
+            dt: Time step between iterations
+        
+        Example:
+            # Loan balance
+            def loan_step(prev, t, i):
+                return prev * 1.005 - 1000  # 0.5% interest, $1000 payment
+            loan = Curve.recurrence(10000, loan_step, dt=1.0)
+        """
+        return RecurrenceCurve(initial, step_fn, dt)
 
 
 class ConstantCurve(Curve):
